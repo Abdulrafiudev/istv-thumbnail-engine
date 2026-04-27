@@ -1,0 +1,21 @@
+# Render Blueprint — declarative deploy config.
+# Push this repo to GitHub, then in Render: New → Blueprint → connect repo. Render
+# reads this file and provisions the service automatically. The single secret
+# (GOOGLE_GENAI_API_KEY) is marked `sync: false` so it must be set manually in the
+# Render dashboard after the first deploy — never bake it into the file.
+
+services:
+  - type: web
+    name: istv-thumbnail-engine
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: GOOGLE_GENAI_API_KEY
+        sync: false

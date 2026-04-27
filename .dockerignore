@@ -1,0 +1,34 @@
+# Mirror of .gcloudignore — used by `docker build` if you ever switch from
+# Cloud Run buildpacks to a custom Dockerfile.
+
+node_modules/
+package-lock.json.bak
+
+.env
+.env.local
+.env.*.local
+
+app/client/dist/
+dist/
+
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+.vscode/
+.idea/
+.claude/
+
+.git/
+.gitignore
+.gitattributes
+
+CLAUDE.md
+ISTV_AI_Knowledge_Base.md
+.env.example
+
+test_portrait.*
+*.test.js
+
+.gcloudignore
+.dockerignore

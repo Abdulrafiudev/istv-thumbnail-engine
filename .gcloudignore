@@ -1,0 +1,44 @@
+# Files ignored by `gcloud app deploy` / `gcloud run deploy`.
+# Cloud Run buildpacks (re)install dependencies and rebuild the client server-side,
+# so anything generated locally — node_modules, the Vite dist bundle, .env secrets,
+# and developer-only docs — should NOT be uploaded.
+
+# Local install artefacts (will be reinstalled by the buildpack)
+node_modules/
+package-lock.json.bak
+
+# Local secrets — set as Cloud Run env vars instead, NEVER upload .env
+.env
+.env.local
+.env.*.local
+
+# Local build output — Cloud Run runs `npm run build` itself
+app/client/dist/
+dist/
+
+# Editor / OS junk
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+.vscode/
+.idea/
+.claude/
+
+# Git metadata
+.git/
+.gitignore
+.gitattributes
+
+# Developer-only docs (not needed at runtime)
+CLAUDE.md
+ISTV_AI_Knowledge_Base.md
+.env.example
+
+# Test assets (none currently — placeholder if any are added back)
+test_portrait.*
+*.test.js
+
+# This file itself doesn't need to ship
+.gcloudignore
+.dockerignore
