@@ -419,6 +419,7 @@ dropdown.
 | All variations fail with `AI_GEN_REFUSED`          | Gemini blocking the prompt (safety filter)    | Soften prompt; try a different style preset; confirm model name    |
 | Every thumbnail shows the fallback model badge     | Primary Gemini 3 Pro is rate-limiting / down  | Wait, regenerate. Persistent? Check Google AI Studio status        |
 | Generate button stays disabled                     | Missing photo / industry / custom prompt      | The button's hint line names the missing field                     |
+| `Server returned a non-JSON response... "Not Found"` on Render | Service is a Static Site, not a Web Service, so no Node process is running | In Render dashboard verify the service is **Web Service** (not Static Site); if wrong, delete and recreate via the `render.yaml` Blueprint. Test `<URL>/api/health` — should return `{"status":"ok"}` |
 | Dev server crash on `npm run dev`                  | Running from wrong directory                  | `cd Thumbnail-generation-main && npm run dev`                      |
 | `QuotaExceededError` in browser console            | `localStorage` full of large base64 assets    | Handled by `safePersist` — oldest assets dropped automatically     |
 
