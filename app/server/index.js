@@ -13,7 +13,10 @@ const { GEMINI_PRIMARY_MODEL, GEMINI_FALLBACK_MODEL } = require('./services/gemi
 const app  = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+// In production the client is served from the same origin, so CORS only needs
+// to be permissive in local dev (where Vite runs on a different port).
+const corsOrigin = process.env.NODE_ENV === 'production' ? false : 'http://localhost:5173';
+app.use(cors(corsOrigin ? { origin: corsOrigin } : {}));
 app.use(express.json({ limit: '50mb' }));
 
 app.use('/api', generateRoutes);
