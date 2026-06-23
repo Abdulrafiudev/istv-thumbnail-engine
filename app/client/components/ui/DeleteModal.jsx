@@ -11,7 +11,7 @@ export default function DeleteModal({ onConfirm, onCancel, title, description, c
         backdropFilter: 'blur(6px)',
         zIndex: 100,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: 24
+        padding: '16px'
       }}
     >
       <div

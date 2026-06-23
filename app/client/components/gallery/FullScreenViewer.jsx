@@ -38,57 +38,87 @@ export default function FullScreenViewer({ asset, onClose, onDelete, onAddAsset 
         backdropFilter: 'blur(12px)',
         zIndex: 50,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '24px'
+        padding: '16px'
       }}
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          maxWidth: 1100, width: '100%',
-          background: BRAND.panelBg,
-          border: `1px solid ${BRAND.border}`,
-          borderRadius: BRAND.radiusLg,
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) 300px',
-          gridTemplateRows: 'minmax(0, 1fr)',
-          overflow: 'hidden',
-          height: '88vh',
-          maxHeight: 820
-        }}
-      >
+      <style>{`
+        .fsv-inner {
+          max-width: 1100px;
+          width: 100%;
+          background: ${BRAND.panelBg};
+          border: 1px solid ${BRAND.border};
+          border-radius: ${BRAND.radiusLg};
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 300px;
+          grid-template-rows: minmax(0, 1fr);
+          overflow: hidden;
+          height: 88vh;
+          max-height: 820px;
+        }
+        .fsv-actions {
+          padding: 16px 20px;
+          border-top: 1px solid ${BRAND.border};
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        @media (max-width: 680px) {
+          .fsv-inner {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+            height: 92vh;
+            max-height: none;
+          }
+          .fsv-image-pane {
+            max-height: 40vh !important;
+          }
+          .fsv-panel {
+            border-left: none !important;
+            border-top: 1px solid ${BRAND.border};
+          }
+          .fsv-actions button {
+            flex: 1;
+          }
+        }
+      `}</style>
+
+      <div onClick={(e) => e.stopPropagation()} className="fsv-inner">
+
         {/* Image */}
-        <div style={{
-          background: '#050507',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: 28,
-          overflow: 'hidden',
-          minHeight: 0
-        }}>
+        <div
+          className="fsv-image-pane"
+          style={{
+            background: '#050507',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: 24, overflow: 'hidden', minHeight: 0
+          }}
+        >
           <img
             src={asset.imageDataUrl}
             alt={asset.styleName}
             style={{
-              maxWidth: '100%',
-              maxHeight: '100%',
-              width: 'auto',
-              height: 'auto',
-              objectFit: 'contain',
-              borderRadius: 8,
-              display: 'block'
+              maxWidth: '100%', maxHeight: '100%',
+              width: 'auto', height: 'auto',
+              objectFit: 'contain', borderRadius: 8, display: 'block'
             }}
           />
         </div>
 
         {/* Panel */}
-        <div style={{ borderLeft: `1px solid ${BRAND.border}`, display: 'flex', flexDirection: 'column', overflowY: 'auto', minHeight: 0 }}>
-          <div style={{ padding: '16px 20px', borderBottom: `1px solid ${BRAND.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          className="fsv-panel"
+          style={{ borderLeft: `1px solid ${BRAND.border}`, display: 'flex', flexDirection: 'column', overflowY: 'auto', minHeight: 0 }}
+        >
+          {/* Panel header */}
+          <div style={{ padding: '16px 20px', borderBottom: `1px solid ${BRAND.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
             <span style={{ color: BRAND.text, fontFamily: BRAND.font, fontSize: 14, fontWeight: 700 }}>
               {asset.industry}
             </span>
             <button type="button" onClick={onClose} style={{ background: 'transparent', color: BRAND.textMuted, border: 'none', fontSize: 18, cursor: 'pointer', lineHeight: 1 }}>✕</button>
           </div>
 
-          <div style={{ padding: '4px 20px', flex: 1 }}>
+          {/* Meta */}
+          <div style={{ padding: '4px 20px', flex: 1, overflowY: 'auto' }}>
             {asset.isFallbackModel === true && (
               <div style={{
                 margin: '14px 0',
@@ -99,20 +129,17 @@ export default function FullScreenViewer({ asset, onClose, onDelete, onAddAsset 
                 Fallback model used — {shortModelLabel(asset.modelUsed)} ran instead of Gemini 3 Pro. Regenerate to retry the primary model.
               </div>
             )}
-
             <MetaRow label="Style" value={asset.styleName} />
             <MetaRow label="Aspect ratio" value={asset.aspectRatio} />
             {asset.modelUsed && <MetaRow label="Model" value={shortModelLabel(asset.modelUsed)} />}
-
             <div style={{ padding: '10px 0', borderBottom: `1px solid ${BRAND.border}` }}>
               <p style={{ color: BRAND.textMuted, fontFamily: BRAND.font, fontSize: 12, fontWeight: 500, margin: '0 0 6px 0' }}>Prompt</p>
-              <p style={{ color: BRAND.textMuted, fontFamily: BRAND.font, fontSize: 11, lineHeight: 1.6, margin: 0 }}>
-                {asset.promptUsed}
-              </p>
+              <p style={{ color: BRAND.textMuted, fontFamily: BRAND.font, fontSize: 11, lineHeight: 1.6, margin: 0 }}>{asset.promptUsed}</p>
             </div>
           </div>
 
-          <div style={{ padding: '16px 20px', borderTop: `1px solid ${BRAND.border}`, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {/* Actions */}
+          <div className="fsv-actions">
             <button type="button" onClick={handleDownload} style={{
               flex: 1, background: BRAND.gold, color: '#09090B', border: 'none',
               padding: '11px', borderRadius: BRAND.radiusSm, fontFamily: BRAND.font,
