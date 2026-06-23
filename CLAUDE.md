@@ -48,7 +48,26 @@ Aspect ratio     ─┘                │
 
 ---
 
-## 3. Stack
+## 3. Architecture preferences
+
+These are standing conventions for all future development on this project:
+
+* **Backend — MVC pattern.** Logic is separated into three layers:
+  * `routes/` — Express router only. Maps HTTP verbs + paths to controller methods. No business logic.
+  * `controllers/` — Handles `req`/`res`. Validates input, calls services, formats the response. No AI or data-access logic.
+  * `services/` — Pure business logic. No Express. Independently testable.
+
+* **Frontend — Component-based system.** Components live under `app/client/components/` grouped by domain:
+  * `components/layout/` — Structural shell components (e.g. `SectionTitle`)
+  * `components/form/` — Form atoms and molecules (e.g. `Toggle`, `StyleSelector`, `SavePresetModal`)
+  * `components/gallery/` — Thumbnail display components (e.g. `PlaceholderCard`, `FullScreenViewer`)
+  * Top-level `app/client/` files are page-level orchestrators only (`Dashboard.jsx`, `InputForm.jsx`, `ThumbnailGrid.jsx`, `ThumbnailCard.jsx`, `AssetUpload.jsx`, `GenerateButton.jsx`).
+
+* **Separation of concerns is the priority.** Every file should have one clear job. When adding a feature, ask which layer it belongs to before writing code.
+
+---
+
+## 4. Stack
 
 * **Server:** Node + Express (CommonJS), `@google/genai` SDK, `dotenv`, `cors`
 * **Client:** React 18 + Vite, `file-saver`, inline-style components
@@ -56,7 +75,7 @@ Aspect ratio     ─┘                │
 
 ---
 
-## 4. Directory structure
+## 5. Directory structure
 
 ```
 Thumbnail-generation-main/
@@ -71,28 +90,43 @@ Thumbnail-generation-main/
 ├── package.json                      ← dependencies, scripts, engines
 ├── package-lock.json
 └── app/
-    ├── server/
-    │   ├── index.js                  ← Express: API + (in prod) static client + banner
-    │   ├── api-handler.js            ← POST /api/generate route + validation
-    │   ├── ai-generation-handler.js  ← Gemini pipeline (Pro → Flash fallback)
-    │   ├── prompt-builder.js         ← bracketed-section prompt composition
-    │   └── default-styles.js         ← 10 server-side preset templates
-    └── client/
+    ├── server/                       ← MVC structure
+    │   ├── index.js                  ← Express setup, middleware, server boot
+    │   ├── routes/
+    │   │   └── generate.routes.js    ← maps /api/generate + /api/health to controllers
+    │   ├── controllers/
+    │   │   └── generate.controller.js ← req/res handling + input validation
+    │   └── services/
+    │       ├── generation.service.js  ← variation orchestration (Promise.allSettled)
+    │       ├── gemini.service.js      ← Gemini API calls + retry + fallback logic
+    │       ├── prompt.service.js      ← bracketed-section prompt composition
+    │       └── styles.service.js      ← 10 preset templates + resolveStyle()
+    └── client/                       ← component-based structure
         ├── index.html, main.jsx, vite.config.js
         ├── brand.js                  ← colour tokens (ISTV black + gold)
         ├── constants.js              ← preset metadata, ratios, counts
         ├── api.js                    ← fetch wrapper for /api/generate
-        ├── Dashboard.jsx             ← top-level layout + state + flow
+        ├── Dashboard.jsx             ← top-level layout + state orchestrator
         ├── AssetUpload.jsx           ← single-image drag-drop with canvas resize
-        ├── InputForm.jsx             ← style dropdown + industry + ratio + count
+        ├── InputForm.jsx             ← form orchestrator (composes form sub-components)
         ├── GenerateButton.jsx        ← gold CTA + contextual disabled hint
-        ├── ThumbnailGrid.jsx         ← results grid + full-screen viewer
-        └── ThumbnailCard.jsx         ← thumbnail with optional model-fallback badge
+        ├── ThumbnailGrid.jsx         ← grid orchestrator (composes gallery sub-components)
+        ├── ThumbnailCard.jsx         ← individual thumbnail card
+        └── components/
+            ├── layout/
+            │   └── SectionTitle.jsx  ← gold-accent section header
+            ├── form/
+            │   ├── Toggle.jsx        ← reusable button-group toggle (ratio / count)
+            │   ├── StyleSelector.jsx ← style dropdown + description
+            │   └── SavePresetModal.jsx ← inline save-preset UI
+            └── gallery/
+                ├── PlaceholderCard.jsx  ← pulsing generation placeholder
+                └── FullScreenViewer.jsx ← full-screen asset detail + download/delete
 ```
 
 ---
 
-## 5. Running locally
+## 6. Running locally
 
 ```bash
 cd "Thumbnail-generation-main"
@@ -514,3 +548,20 @@ Append every material change with **date, scope, rationale**. Newest first.
   (dropped `NEGATIVE_PROMPT`), `app/server/index.js` (banner), `app/client/ThumbnailCard.jsx`
   (badge), `app/client/ThumbnailGrid.jsx` (viewer + badge), `.env`, `.env.example`,
   `package.json` (removed `replicate`), this file (slimmed end-to-end).
+
+### 2026-06-23 — Full MVC + component-based refactor (no feature changes)
+
+* **Backend restructured to MVC.** The flat `app/server/` files are reorganised into three clear layers:
+  * `routes/generate.routes.js` — Express router only, maps paths to controller methods.
+  * `controllers/generate.controller.js` — req/res handling + input validation (was `api-handler.js`).
+  * `services/generation.service.js` — variation orchestration (`Promise.allSettled` loop).
+  * `services/gemini.service.js` — Gemini API calls, retry logic, fallback (was `ai-generation-handler.js`).
+  * `services/prompt.service.js` — prompt composition (was `prompt-builder.js`).
+  * `services/styles.service.js` — preset library + `resolveStyle()` (was `default-styles.js`).
+  * Old flat files retained as thin re-export shims for backwards compatibility.
+* **Frontend restructured to component-based system.** Sub-components extracted from large files into `app/client/components/` grouped by domain:
+  * `components/layout/SectionTitle.jsx` — extracted from `Dashboard.jsx`.
+  * `components/form/Toggle.jsx`, `StyleSelector.jsx`, `SavePresetModal.jsx` — extracted from `InputForm.jsx`.
+  * `components/gallery/PlaceholderCard.jsx`, `FullScreenViewer.jsx` — extracted from `ThumbnailGrid.jsx`.
+* **Zero behaviour changes.** Same Gemini pipeline, same prompts, same UI, same API contract.
+* **CLAUDE.md** — added § 3 "Architecture preferences" documenting MVC + component conventions as standing rules, updated directory structure map.

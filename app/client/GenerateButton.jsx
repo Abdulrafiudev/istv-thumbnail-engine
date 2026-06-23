@@ -3,21 +3,19 @@ import { BRAND } from './brand';
 
 export default function GenerateButton({ onClick, disabled, isGenerating, error, disabledHint }) {
   return (
-    <div style={{ marginTop: 'auto' }}>
+    <div style={{ marginTop: 'auto', paddingTop: 8 }}>
       {error && (
-        <div
-          style={{
-            color: '#ff5a5a',
-            background: 'rgba(255, 90, 90, 0.08)',
-            border: '1px solid rgba(255, 90, 90, 0.3)',
-            borderRadius: 6,
-            padding: '8px 10px',
-            marginBottom: 12,
-            fontFamily: BRAND.font,
-            fontSize: 12,
-            lineHeight: 1.4
-          }}
-        >
+        <div style={{
+          color: BRAND.error,
+          background: BRAND.errorDim,
+          border: `1px solid ${BRAND.errorBorder}`,
+          borderRadius: BRAND.radiusSm,
+          padding: '10px 12px',
+          marginBottom: 12,
+          fontFamily: BRAND.font,
+          fontSize: 13,
+          lineHeight: 1.5
+        }}>
           {error}
         </div>
       )}
@@ -28,34 +26,31 @@ export default function GenerateButton({ onClick, disabled, isGenerating, error,
         disabled={disabled || isGenerating}
         style={{
           width: '100%',
-          background: disabled && !isGenerating ? '#222' : BRAND.gold,
-          color: disabled && !isGenerating ? '#666' : '#080808',
-          padding: '14px',
-          border: 'none',
+          background: disabled && !isGenerating ? BRAND.surface : BRAND.gold,
+          color: disabled && !isGenerating ? BRAND.textSubtle : '#09090B',
+          padding: '13px',
+          border: `1px solid ${disabled && !isGenerating ? BRAND.border : BRAND.gold}`,
           borderRadius: BRAND.radius,
           fontFamily: BRAND.font,
           fontWeight: 700,
           fontSize: 14,
-          letterSpacing: '2px',
           cursor: disabled || isGenerating ? 'not-allowed' : 'pointer',
-          transition: 'background 0.15s',
-          opacity: isGenerating ? 0.85 : 1
+          transition: 'all 0.15s',
+          opacity: isGenerating ? 0.8 : 1,
+          letterSpacing: 0
         }}
       >
-        {isGenerating ? 'GENERATING…' : 'GENERATE'}
+        {isGenerating ? 'Generating...' : 'Generate'}
       </button>
 
       {disabled && !isGenerating && disabledHint && (
-        <p
-          style={{
-            textAlign: 'center',
-            color: BRAND.textMuted,
-            marginTop: 10,
-            fontSize: 11,
-            fontFamily: BRAND.font,
-            letterSpacing: '1px'
-          }}
-        >
+        <p style={{
+          textAlign: 'center',
+          color: BRAND.textMuted,
+          marginTop: 8,
+          fontSize: 12,
+          fontFamily: BRAND.font,
+        }}>
           {disabledHint}
         </p>
       )}

@@ -6,31 +6,21 @@ const path    = require('path');
 const fs      = require('fs');
 const express = require('express');
 const cors    = require('cors');
-const { handleGenerateRequest } = require('./api-handler');
-const { GEMINI_PRIMARY_MODEL, GEMINI_FALLBACK_MODEL } = require('./ai-generation-handler');
+const generateRoutes = require('./routes/generate.routes');
+const { GEMINI_PRIMARY_MODEL, GEMINI_FALLBACK_MODEL } = require('./services/gemini.service');
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS only matters in dev (Vite serves the client at :5173 → API at :3001).
-// In production the built client is served from the same Express origin,
-// so cross-origin headers are unnecessary.
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json({ limit: '50mb' }));
 
-// --- API routes ---
-app.post('/api/generate', handleGenerateRequest);
-app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
+app.use('/api', generateRoutes);
 
-// --- Static client (production) ---
-// When `npm run build` has produced app/client/dist, serve it from this same
-// Express process so a single Cloud Run container handles both API and UI.
-// In dev, dist doesn't exist — Vite serves the client at :5173 with a /api proxy.
-const distPath = path.resolve(__dirname, '../client/dist');
+const distPath  = path.resolve(__dirname, '../client/dist');
 const distExists = fs.existsSync(path.join(distPath, 'index.html'));
 if (distExists) {
   app.use(express.static(distPath));
-  // SPA fallback: any non-API GET returns index.html so client-side routing works.
   app.get(/^\/(?!api\/).*/, (_req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });

@@ -5,6 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ISTV Thumbnail Engine</title>
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body, #root { height: 100%; }
+      body { background: #09090B; color: #FAFAFA; font-family: 'Urbanist', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 99px; }
+
+      .app-layout { display: flex; min-height: 100vh; }
+      .app-sidebar {
+        width: 360px;
+        min-width: 360px;
+        background: #111113;
+        border-right: 1px solid #1F1F23;
+        display: flex;
+        flex-direction: column;
+        max-height: 100vh;
+        overflow-y: auto;
+        position: sticky;
+        top: 0;
+      }
+      .app-main { flex: 1; overflow-y: auto; min-width: 0; }
+
+      @media (max-width: 768px) {
+        .app-layout { flex-direction: column; }
+        .app-sidebar {
+          width: 100% !important;
+          min-width: unset !important;
+          max-height: unset !important;
+          position: relative !important;
+          border-right: none !important;
+          border-bottom: 1px solid #1F1F23;
+        }
+        .app-main { min-height: 60vh; }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
