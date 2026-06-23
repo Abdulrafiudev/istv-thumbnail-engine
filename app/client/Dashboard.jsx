@@ -92,7 +92,7 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => { safePersist(STORAGE_KEYS.CUSTOM_PRESETS, customPresets); }, [customPresets]);
-  useEffect(() => { safePersist(STORAGE_KEYS.ASSETS, assets.slice(0, MAX_STORED_ASSETS)); }, [assets]);
+  useEffect(() => { safePersist(STORAGE_KEYS.ASSETS, assets.slice(0, 20)); }, [assets]);
 
   const set = (key) => (val) => setFormData((prev) => ({ ...prev, [key]: val }));
   const setInput = (key) => (e) => setFormData((prev) => ({ ...prev, [key]: e.target.value }));
@@ -151,7 +151,7 @@ export default function Dashboard() {
 
   const handleDelete = (id) => setAssets((prev) => prev.filter((a) => a.id !== id));
   const handleClearAll = () => setAssets([]);
-  const handleAddAsset = (asset) => setAssets((prev) => [asset, ...prev].slice(0, MAX_STORED_ASSETS));
+  const handleAddAsset = (asset) => setAssets((prev) => [asset, ...prev]);
 
   return (
     <div className="app-layout">
