@@ -33,3 +33,33 @@ export async function generateThumbnails(payload) {
 
   return data;
 }
+
+export async function editBackground({ imageDataUrl, maskDataUrl, instruction, meta }) {
+  const res = await fetch(`${API_BASE}/edit`, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ imageDataUrl, maskDataUrl: maskDataUrl || null, instruction, meta: meta || null }),
+  });
+
+  const text = await res.text();
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    const snippet = text.slice(0, 140).trim();
+    const err = new Error(
+      `Server returned a non-JSON response (HTTP ${res.status}). ` +
+      (snippet ? `Response: "${snippet}"` : '')
+    );
+    err.code = 'BAD_RESPONSE';
+    throw err;
+  }
+
+  if (!res.ok || data?.error) {
+    const err = new Error(data?.message || `Edit failed (HTTP ${res.status})`);
+    err.code = data?.code;
+    throw err;
+  }
+
+  return data;
+}

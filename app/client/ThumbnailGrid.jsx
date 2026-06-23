@@ -4,14 +4,16 @@ import ThumbnailCard from './ThumbnailCard';
 import PlaceholderCard from './components/gallery/PlaceholderCard';
 import FullScreenViewer from './components/gallery/FullScreenViewer';
 import ComparisonViewer from './components/gallery/ComparisonViewer';
+import DeleteModal from './components/ui/DeleteModal';
 
 export default function ThumbnailGrid({
   assets, isGenerating, pendingCount, pendingAspectRatio,
-  viewingAsset, onView, onCloseViewer, onDelete
+  viewingAsset, onView, onCloseViewer, onDelete, onAddAsset, onClearAll
 }) {
   const [compareMode, setCompareMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [comparingPair, setComparingPair] = useState(null);
+  const [showClearModal, setShowClearModal] = useState(false);
 
   const empty = !isGenerating && assets.length === 0;
 
@@ -77,6 +79,19 @@ export default function ThumbnailGrid({
           }}>
             {assets.length} generated
           </div>
+          {assets.length > 0 && (
+            <button type="button" onClick={() => setShowClearModal(true)} style={{
+              background: 'transparent', color: BRAND.textMuted,
+              border: `1px solid ${BRAND.border}`,
+              padding: '7px 14px', borderRadius: BRAND.radiusSm, fontFamily: BRAND.font,
+              fontWeight: 600, fontSize: 13, cursor: 'pointer', transition: 'all 0.15s'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = BRAND.errorBorder; e.currentTarget.style.color = BRAND.error; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = BRAND.border; e.currentTarget.style.color = BRAND.textMuted; }}
+            >
+              Clear all
+            </button>
+          )}
         </div>
       </div>
 
@@ -122,6 +137,7 @@ export default function ThumbnailGrid({
               asset={asset}
               onView={onView}
               onDelete={onDelete}
+              onAddAsset={onAddAsset}
               compareMode={compareMode}
               isSelected={selectedIds.has(asset.id)}
               onToggleSelect={handleToggleSelect}
@@ -130,9 +146,18 @@ export default function ThumbnailGrid({
         </div>
       )}
 
-      <FullScreenViewer asset={viewingAsset} onClose={onCloseViewer} onDelete={onDelete} />
+      <FullScreenViewer asset={viewingAsset} onClose={onCloseViewer} onDelete={onDelete} onAddAsset={onAddAsset} />
       {comparingPair && (
         <ComparisonViewer assetA={comparingPair.assetA} assetB={comparingPair.assetB} onClose={() => setComparingPair(null)} />
+      )}
+      {showClearModal && (
+        <DeleteModal
+          title="Clear all thumbnails"
+          description={`All ${assets.length} thumbnail${assets.length === 1 ? '' : 's'} will be permanently removed from your library. This action cannot be undone.`}
+          confirmLabel="Clear all"
+          onConfirm={() => { setShowClearModal(false); onClearAll(); }}
+          onCancel={() => setShowClearModal(false)}
+        />
       )}
     </div>
   );

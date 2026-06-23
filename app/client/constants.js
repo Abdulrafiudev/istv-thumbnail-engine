@@ -32,3 +32,19 @@ export const FINE_TUNE_DEFAULTS = {
   temperature: 'Neutral',
   composition: 'Balanced'
 };
+
+// Recommended fine-tune settings per style preset.
+// Rationale lives in CLAUDE.md § 8 — these reflect each style's native mood so
+// the fine-tune layer amplifies rather than fights the preset.
+export const STYLE_FINE_TUNE_PRESETS = {
+  'black-gold-editorial': { intensity: 'High',   temperature: 'Warm',    composition: 'Tight'    },
+  'cinematic-gold':       { intensity: 'High',   temperature: 'Warm',    composition: 'Balanced' },
+  'legacy-makers-cover':  { intensity: 'Medium', temperature: 'Neutral', composition: 'Tight'    },
+  'documentary-keyart':   { intensity: 'High',   temperature: 'Cool',    composition: 'Wide'     },
+  'boardroom-power':      { intensity: 'Medium', temperature: 'Cool',    composition: 'Wide'     },
+  'red-carpet-premiere':  { intensity: 'High',   temperature: 'Warm',    composition: 'Tight'    },
+  'luxury-lifestyle':     { intensity: 'Medium', temperature: 'Warm',    composition: 'Wide'     },
+  'keynote-stage':        { intensity: 'High',   temperature: 'Cool',    composition: 'Wide'     },
+  'gritty-founder':       { intensity: 'High',   temperature: 'Cool',    composition: 'Balanced' },
+  'modern-corporate':     { intensity: 'Low',    temperature: 'Neutral', composition: 'Balanced' },
+};

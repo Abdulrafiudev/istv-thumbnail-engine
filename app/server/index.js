@@ -7,6 +7,7 @@ const fs      = require('fs');
 const express = require('express');
 const cors    = require('cors');
 const generateRoutes = require('./routes/generate.routes');
+const editRoutes     = require('./routes/edit.routes');
 const { GEMINI_PRIMARY_MODEL, GEMINI_FALLBACK_MODEL } = require('./services/gemini.service');
 
 const app  = express();
@@ -16,6 +17,7 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json({ limit: '50mb' }));
 
 app.use('/api', generateRoutes);
+app.use('/api', editRoutes);
 
 const distPath  = path.resolve(__dirname, '../client/dist');
 const distExists = fs.existsSync(path.join(distPath, 'index.html'));

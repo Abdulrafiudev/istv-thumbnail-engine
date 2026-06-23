@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { saveAs } from 'file-saver';
 import { BRAND } from './brand';
 import DeleteModal from './components/ui/DeleteModal';
+import ImageEditor from './components/editor/ImageEditor';
 
 function aspectRatioCss(ratio) {
   if (ratio === '16:9') return '16 / 9';
@@ -17,8 +18,9 @@ function shortModelLabel(modelId) {
   return modelId;
 }
 
-export default function ThumbnailCard({ asset, onView, onDelete, compareMode, isSelected, onToggleSelect }) {
+export default function ThumbnailCard({ asset, onView, onDelete, onAddAsset, compareMode, isSelected, onToggleSelect }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditor, setShowEditor]           = useState(false);
   const isError = !!asset.error;
   const isModelFallback = asset.isFallbackModel === true;
 
@@ -47,6 +49,8 @@ export default function ThumbnailCard({ asset, onView, onDelete, compareMode, is
   const handleDownload = (e) => { e.stopPropagation(); saveAs(asset.imageDataUrl, `istv-${asset.id}.png`); };
   const handleDeleteClick = (e) => { e.stopPropagation(); setShowDeleteModal(true); };
   const handleDeleteConfirm = () => { setShowDeleteModal(false); onDelete(asset.id); };
+  const handleEditClick = (e) => { e.stopPropagation(); setShowEditor(true); };
+  const handleEditResult = (edited) => { if (onAddAsset) onAddAsset(edited); };
 
   return (
     <div
@@ -99,6 +103,13 @@ export default function ThumbnailCard({ asset, onView, onDelete, compareMode, is
             }}>
               Download
             </button>
+            <button type="button" onClick={handleEditClick} style={{
+              background: BRAND.goldDim, color: BRAND.gold, border: `1px solid ${BRAND.goldBorder}`,
+              backdropFilter: 'blur(8px)', padding: '7px 14px', borderRadius: BRAND.radiusSm,
+              fontFamily: BRAND.font, fontWeight: 600, fontSize: 12, cursor: 'pointer'
+            }}>
+              Edit
+            </button>
             <button type="button" onClick={handleDeleteClick} style={{
               background: 'rgba(239,68,68,0.15)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.3)',
               backdropFilter: 'blur(8px)', padding: '7px 14px', borderRadius: BRAND.radiusSm,
@@ -139,6 +150,13 @@ export default function ThumbnailCard({ asset, onView, onDelete, compareMode, is
         <DeleteModal
           onConfirm={handleDeleteConfirm}
           onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
+      {showEditor && (
+        <ImageEditor
+          asset={asset}
+          onClose={() => setShowEditor(false)}
+          onResult={handleEditResult}
         />
       )}
     </div>

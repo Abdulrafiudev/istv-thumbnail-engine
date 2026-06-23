@@ -1,7 +1,7 @@
 import React from 'react';
 import { BRAND } from '../../brand';
 
-export default function DeleteModal({ onConfirm, onCancel }) {
+export default function DeleteModal({ onConfirm, onCancel, title, description, confirmLabel }) {
   return (
     <div
       onClick={onCancel}
@@ -30,10 +30,10 @@ export default function DeleteModal({ onConfirm, onCancel }) {
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <p style={{ fontFamily: BRAND.font, fontSize: 15, fontWeight: 700, color: BRAND.text, margin: 0 }}>
-            Delete thumbnail
+            {title || 'Delete thumbnail'}
           </p>
           <p style={{ fontFamily: BRAND.font, fontSize: 13, color: BRAND.textMuted, margin: 0, lineHeight: 1.5 }}>
-            This thumbnail will be permanently removed from your library. This action cannot be undone.
+            {description || 'This thumbnail will be permanently removed from your library. This action cannot be undone.'}
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function DeleteModal({ onConfirm, onCancel }) {
               cursor: 'pointer'
             }}
           >
-            Delete
+            {confirmLabel || 'Delete'}
           </button>
         </div>
       </div>

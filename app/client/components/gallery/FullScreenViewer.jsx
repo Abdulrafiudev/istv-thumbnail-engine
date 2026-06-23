@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { saveAs } from 'file-saver';
 import { BRAND } from '../../brand';
 import DeleteModal from '../ui/DeleteModal';
+import ImageEditor from '../editor/ImageEditor';
 
 function shortModelLabel(modelId) {
   if (!modelId) return 'Gemini';
@@ -20,11 +21,13 @@ function MetaRow({ label, value }) {
   );
 }
 
-export default function FullScreenViewer({ asset, onClose, onDelete }) {
+export default function FullScreenViewer({ asset, onClose, onDelete, onAddAsset }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditor, setShowEditor]           = useState(false);
   if (!asset) return null;
   const handleDownload = () => saveAs(asset.imageDataUrl, `istv-${asset.id}.png`);
   const handleDeleteConfirm = () => { setShowDeleteModal(false); onDelete(asset.id); onClose(); };
+  const handleEditResult = (edited) => { if (onAddAsset) onAddAsset(edited); };
 
   return (
     <div
@@ -41,27 +44,43 @@ export default function FullScreenViewer({ asset, onClose, onDelete }) {
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          maxWidth: 1080, width: '100%',
+          maxWidth: 1100, width: '100%',
           background: BRAND.panelBg,
           border: `1px solid ${BRAND.border}`,
           borderRadius: BRAND.radiusLg,
           display: 'grid',
-          gridTemplateColumns: 'minmax(0, 2fr) minmax(260px, 1fr)',
+          gridTemplateColumns: 'minmax(0, 1fr) 300px',
+          gridTemplateRows: 'minmax(0, 1fr)',
           overflow: 'hidden',
-          maxHeight: '90vh'
+          height: '88vh',
+          maxHeight: 820
         }}
       >
         {/* Image */}
-        <div style={{ background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+        <div style={{
+          background: '#050507',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 28,
+          overflow: 'hidden',
+          minHeight: 0
+        }}>
           <img
             src={asset.imageDataUrl}
             alt={asset.styleName}
-            style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain', borderRadius: 8 }}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              width: 'auto',
+              height: 'auto',
+              objectFit: 'contain',
+              borderRadius: 8,
+              display: 'block'
+            }}
           />
         </div>
 
         {/* Panel */}
-        <div style={{ borderLeft: `1px solid ${BRAND.border}`, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+        <div style={{ borderLeft: `1px solid ${BRAND.border}`, display: 'flex', flexDirection: 'column', overflowY: 'auto', minHeight: 0 }}>
           <div style={{ padding: '16px 20px', borderBottom: `1px solid ${BRAND.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ color: BRAND.text, fontFamily: BRAND.font, fontSize: 14, fontWeight: 700 }}>
               {asset.industry}
@@ -93,13 +112,21 @@ export default function FullScreenViewer({ asset, onClose, onDelete }) {
             </div>
           </div>
 
-          <div style={{ padding: '16px 20px', borderTop: `1px solid ${BRAND.border}`, display: 'flex', gap: 8 }}>
+          <div style={{ padding: '16px 20px', borderTop: `1px solid ${BRAND.border}`, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button type="button" onClick={handleDownload} style={{
               flex: 1, background: BRAND.gold, color: '#09090B', border: 'none',
               padding: '11px', borderRadius: BRAND.radiusSm, fontFamily: BRAND.font,
-              fontWeight: 700, fontSize: 13, cursor: 'pointer'
+              fontWeight: 700, fontSize: 13, cursor: 'pointer', minWidth: 80
             }}>
               Download
+            </button>
+            <button type="button" onClick={() => setShowEditor(true)} style={{
+              background: BRAND.goldDim, color: BRAND.gold,
+              border: `1px solid ${BRAND.goldBorder}`, padding: '11px 16px',
+              borderRadius: BRAND.radiusSm, fontFamily: BRAND.font,
+              fontWeight: 600, fontSize: 13, cursor: 'pointer'
+            }}>
+              Edit
             </button>
             <button type="button" onClick={() => setShowDeleteModal(true)} style={{
               background: 'transparent', color: BRAND.error,
@@ -117,6 +144,13 @@ export default function FullScreenViewer({ asset, onClose, onDelete }) {
         <DeleteModal
           onConfirm={handleDeleteConfirm}
           onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
+      {showEditor && (
+        <ImageEditor
+          asset={asset}
+          onClose={() => setShowEditor(false)}
+          onResult={handleEditResult}
         />
       )}
     </div>

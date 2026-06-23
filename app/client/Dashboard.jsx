@@ -150,6 +150,8 @@ export default function Dashboard() {
   };
 
   const handleDelete = (id) => setAssets((prev) => prev.filter((a) => a.id !== id));
+  const handleClearAll = () => setAssets([]);
+  const handleAddAsset = (asset) => setAssets((prev) => [asset, ...prev].slice(0, MAX_STORED_ASSETS));
 
   return (
     <div className="app-layout">
@@ -226,7 +228,7 @@ export default function Dashboard() {
 
           {/* 5 — Fine-tune */}
           <Section step="5" title="Fine-tune">
-            <FineTuneControls fineTune={formData.fineTune} onChange={setFineTune} />
+            <FineTuneControls fineTune={formData.fineTune} onChange={setFineTune} styleId={formData.styleId} />
           </Section>
 
         </div>
@@ -253,6 +255,8 @@ export default function Dashboard() {
           onView={setViewingAsset}
           onCloseViewer={() => setViewingAsset(null)}
           onDelete={handleDelete}
+          onClearAll={handleClearAll}
+          onAddAsset={handleAddAsset}
         />
       </main>
     </div>
