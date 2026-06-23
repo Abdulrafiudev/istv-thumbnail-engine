@@ -74,7 +74,7 @@ export default function ImageEditor({ asset, onClose, onResult }) {
           <div>
             <div style={{ color: BRAND.text, fontFamily: BRAND.font, fontSize: 15, fontWeight: 700 }}>Edit Background</div>
             <div style={{ color: BRAND.textMuted, fontFamily: BRAND.font, fontSize: 12, marginTop: 2 }}>
-              Paint over the area to change, then describe the edit
+              Paint over an area to target it, or just describe your change below
             </div>
           </div>
           <button type="button" onClick={onClose} style={{
@@ -190,7 +190,7 @@ export default function ImageEditor({ asset, onClose, onResult }) {
               <p style={{ color: BRAND.error, fontFamily: BRAND.font, fontSize: 12, margin: '6px 0 0 0' }}>{error}</p>
             )}
             <p style={{ color: BRAND.textSubtle, fontFamily: BRAND.font, fontSize: 11, margin: '5px 0 0 0' }}>
-              Paint over the area to edit, or skip painting to describe a global change.
+              Painting is optional — describing the change alone is enough for most edits.
             </p>
           </div>
         </div>
