@@ -11,10 +11,12 @@ const COMPOSITION_VARIANTS = [
 const SUBJECT_CONSTRAINTS =
   '[SUBJECT CONSTRAINTS] (CRITICAL — DO NOT ALTER): The subject must remain 100% identical to the uploaded reference photo(s). ' +
   'Preserve exact facial features, bone structure, skin tone, ethnicity, hair style and colour, facial hair, age, eye colour, and body proportions. ' +
+  'Preserve the exact clothing and outfit from the reference photo — every garment, colour, pattern, fabric, and accessory must remain identical and immutable. ' +
+  'Do not swap, alter, upgrade, or stylize the clothing in any way, even to match the scene aesthetic. ' +
   'Do not morph, smooth, stylize, retouch, slim, age, de-age, or beautify the subject in any way. ' +
   'If multiple reference photos are provided, use all of them to reinforce identity — never blend with a different person. ' +
-  'This is a paying ISTV documentary client; their likeness is contractual and must be exact. ' +
-  'Exact likeness takes priority over every other instruction in this prompt.';
+  'This is a paying ISTV documentary client; their likeness and clothing are contractual and must be exact. ' +
+  'Exact likeness and exact clothing take priority over every other instruction in this prompt.';
 
 const QUALITY_SUFFIX =
   'semi-photorealistic with cinematic documentary production value, 4K resolution, ' +
